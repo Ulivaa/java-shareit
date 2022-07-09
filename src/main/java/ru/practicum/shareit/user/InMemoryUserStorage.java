@@ -21,10 +21,10 @@ public class InMemoryUserStorage implements UserStorage {
 
     public User updateUser(long userId, User user) {
         User updateUser = users.get(userId);
-        if (user.getName() != null){
+        if (user.getName() != null) {
             updateUser.setName(user.getName());
         }
-        if (user.getEmail() != null){
+        if (user.getEmail() != null) {
             updateUser.setEmail(user.getEmail());
         }
         users.put(updateUser.getId(), updateUser);

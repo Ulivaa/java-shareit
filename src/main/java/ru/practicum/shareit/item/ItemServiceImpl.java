@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.IncorrectParameterException;
 import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.user.UserService;
-import ru.practicum.shareit.user.UserStorage;
 
 import java.util.ArrayList;
 import java.util.Collection;

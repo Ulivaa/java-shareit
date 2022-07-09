@@ -5,9 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
-/**
- * // TODO .
- */
+
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {
@@ -20,12 +18,12 @@ public class UserController {
     }
 
     @PostMapping
-    public User addUser(@RequestBody User user){
+    public User addUser(@RequestBody User user) {
         return userService.addUser(user);
     }
 
     @PatchMapping("/{userId}")
-    public User updateUser(@PathVariable long userId, @RequestBody User user){
+    public User updateUser(@PathVariable long userId, @RequestBody User user) {
         return userService.updateUser(userId, user);
     }
 
@@ -40,7 +38,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable long userId){
+    public void deleteUser(@PathVariable long userId) {
         userService.deleteUser(userId);
     }
 }
