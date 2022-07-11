@@ -1,9 +1,10 @@
 package ru.practicum.shareit.item;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import ru.practicum.shareit.requests.ItemRequest;
+import ru.practicum.shareit.user.User;
 
 @Getter
 @Setter
@@ -13,7 +14,6 @@ public class Item {
     private String name;
     private String description;
     private Boolean available;
-    private Long owner;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private Long requestId;
+    private User owner;
+    private ItemRequest itemRequest;
 }

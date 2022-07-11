@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.IncorrectParameterException;
 import ru.practicum.shareit.exception.ItemNotFoundException;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
 import java.util.ArrayList;
@@ -22,15 +23,15 @@ public class ItemServiceImpl implements ItemService {
 
     public Item addItem(long userId, Item item) {
         hasParams(item);
-        userService.getUserById(userId);
-        item.setOwner(userId);
+        User user = userService.getUserById(userId);
+        item.setOwner(user);
         return itemStorage.addItem(item);
     }
 
     @Override
     public Item updateItem(long userId, long itemId, Item item) {
         userService.getUserById(userId);
-        if (getItemById(itemId).getOwner() != userId) {
+        if (getItemById(itemId).getOwner().getId() != userId) {
             throw new ItemNotFoundException(String.format("Вещь № %d не пренадлежит пользователю № %d", itemId, userId));
         }
         return itemStorage.updateItem(itemId, item);

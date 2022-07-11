@@ -28,8 +28,8 @@ public class InMemoryItemStorage implements ItemStorage {
         if (item.getAvailable() != null) {
             updateItem.setAvailable(item.getAvailable());
         }
-        if (item.getRequestId() != null) {
-            updateItem.setRequestId(item.getRequestId());
+        if (item.getItemRequest() != null) {
+            updateItem.setItemRequest(item.getItemRequest());
         }
         return updateItem;
     }
@@ -45,7 +45,7 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     public Collection<Item> getAllItemByUserId(long userId) {
-        return items.values().stream().filter(item -> item.getOwner() == userId).collect(Collectors.toUnmodifiableList());
+        return items.values().stream().filter(item -> item.getOwner().getId() == userId).collect(Collectors.toUnmodifiableList());
     }
 
     @Override
