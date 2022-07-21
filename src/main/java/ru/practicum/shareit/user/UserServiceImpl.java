@@ -11,11 +11,11 @@ import java.util.Collection;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UserStorage userStorage) {
-        this.userStorage = userStorage;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -23,37 +23,46 @@ public class UserServiceImpl implements UserService {
         hasParams(user);
         checkValidParams(user);
         checkDuplicateEmail(user.getEmail());
-        return userStorage.addUser(user);
+        userRepository.save(user);
+        return user;
     }
 
     @Override
     public User updateUser(long userId, User user) {
-        getUserById(userId);
+        User updateUser = getUserById(userId);
         checkValidParams(user);
-        return userStorage.updateUser(userId, user);
+        if (user.getName() != null) {
+            updateUser.setName(user.getName());
+        }
+        if (user.getEmail() != null) {
+            updateUser.setEmail(user.getEmail());
+        }
+        userRepository.save(updateUser);
+        return updateUser;
     }
 
     @Override
     public void deleteUser(long userId) {
-        userStorage.deleteUser(userId);
+        userRepository.deleteById(userId);
+//        userStorage.deleteUser(userId);
     }
 
     @Override
     public User getUserById(long userId) {
-        return userStorage.getUserById(userId).orElseThrow(() -> new UserNotFoundException(String.format("Пользователь № %d не найден", userId)));
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(String.format("Пользователь № %d не найден", userId)));
     }
 
     @Override
     public Collection<User> getAllUsers() {
-        return userStorage.getAllUsers();
+        return userRepository.findAll();
     }
 
     private boolean checkValidParams(User user) {
         if (user.getEmail() != null) {
-            checkDuplicateEmail(user.getEmail());
             if (!user.getEmail().contains("@") || !user.getEmail().contains(".")) {
                 throw new IncorrectParameterException("email");
             }
+            checkDuplicateEmail(user.getEmail());
         }
         return true;
     }
@@ -69,7 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean checkDuplicateEmail(String userEmail) {
-        if (userStorage.getUserByEmail(userEmail).isEmpty()) {
+        if (userRepository.findByEmailContainingIgnoreCase(userEmail).isEmpty()) {
             return true;
         } else throw new DuplicateEmailException();
     }

@@ -7,25 +7,26 @@ import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 @Service
 public class ItemServiceImpl implements ItemService {
-    private final ItemStorage itemStorage;
     private final UserService userService;
+    private final ItemRepository itemRepository;
 
     @Autowired
-    public ItemServiceImpl(ItemStorage itemStorage, UserService userService) {
-        this.itemStorage = itemStorage;
+    public ItemServiceImpl(UserService userService, ItemRepository itemRepository) {
         this.userService = userService;
+        this.itemRepository = itemRepository;
     }
 
     public Item addItem(long userId, Item item) {
         hasParams(item);
         User user = userService.getUserById(userId);
         item.setOwner(user);
-        return itemStorage.addItem(item);
+        itemRepository.save(item);
+        return item;
     }
 
     @Override
@@ -34,12 +35,27 @@ public class ItemServiceImpl implements ItemService {
         if (getItemById(itemId).getOwner().getId() != userId) {
             throw new ItemNotFoundException(String.format("Вещь № %d не пренадлежит пользователю № %d", itemId, userId));
         }
-        return itemStorage.updateItem(itemId, item);
+        Item updateItem = getItemById(itemId);
+        if (item.getName() != null) {
+            updateItem.setName(item.getName());
+        }
+        if (item.getDescription() != null) {
+            updateItem.setDescription(item.getDescription());
+        }
+        if (item.getAvailable() != null) {
+            updateItem.setAvailable(item.getAvailable());
+        }
+        if (item.getItemRequest() != null) {
+            updateItem.setItemRequest(item.getItemRequest());
+        }
+        itemRepository.save(updateItem);
+        return updateItem;
     }
 
     public void deleteItem(long itemId) {
         if (getItemById(itemId) != null) {
-            itemStorage.deleteItem(itemId);
+            itemRepository.deleteById(itemId);
+//            itemStorage.deleteItem(itemId);
         }
     }
 
@@ -57,25 +73,26 @@ public class ItemServiceImpl implements ItemService {
     }
 
     public Item getItemById(long itemId) {
-        return itemStorage.getItemById(itemId).orElseThrow(() -> new ItemNotFoundException(String.format("Пользователь № %d не найден", itemId)));
+        return itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(String.format("Пользователь № %d не найден", itemId)));
     }
 
     @Override
     public Collection<Item> getAllItem() {
-        return itemStorage.getAllItem();
+        return itemRepository.findAll();
     }
 
     @Override
     public Collection<Item> getAllItemByUserId(long userId) {
-        return itemStorage.getAllItemByUserId(userId);
+        return itemRepository.findItemsByOwnerId(userId);
     }
 
+    //    TODO!!!!
     @Override
     public Collection<Item> searchBySubstring(String substr) {
-        if (substr.isEmpty()) {
-            return new ArrayList<>();
+        if (substr.isBlank()) {
+            return Collections.emptyList();
         }
-        return itemStorage.searchBySubstring(substr);
+        return itemRepository.searchByNameAndDescription(substr);
     }
 }
 
