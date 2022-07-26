@@ -22,7 +22,6 @@ public class UserServiceImpl implements UserService {
     public User addUser(User user) {
         hasParams(user);
         checkValidParams(user);
-//        checkDuplicateEmail(user.getEmail());
         userRepository.save(user);
         return user;
     }
@@ -44,7 +43,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(long userId) {
         userRepository.deleteById(userId);
-//        userStorage.deleteUser(userId);
     }
 
     @Override
@@ -62,7 +60,6 @@ public class UserServiceImpl implements UserService {
             if (!user.getEmail().contains("@") || !user.getEmail().contains(".")) {
                 throw new IncorrectParameterException("email");
             }
-            //checkDuplicateEmail(user.getEmail());
         }
         return true;
     }

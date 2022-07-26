@@ -2,11 +2,14 @@ package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exception.IncorrectParameterException;
 import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -15,11 +18,15 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final ItemRepository itemRepository;
+    private final CommentRepository commentRepository;
+    private final BookingRepository bookingRepository;
 
     @Autowired
-    public ItemServiceImpl(UserService userService, ItemRepository itemRepository) {
+    public ItemServiceImpl(UserService userService, ItemRepository itemRepository, CommentRepository commentRepository, BookingRepository bookingRepository) {
         this.userService = userService;
         this.itemRepository = itemRepository;
+        this.commentRepository = commentRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     public Item addItem(long userId, Item item) {
@@ -28,6 +35,30 @@ public class ItemServiceImpl implements ItemService {
         item.setOwner(user);
         itemRepository.save(item);
         return item;
+    }
+
+    @Override
+    public Comment addComment(long userId, long itemId, Comment comment) {
+        if (!isUserBookedItem(userId, itemId)) {
+            throw new IncorrectParameterException("Пользователь не имеет завершенных бронирований для этой вещи");
+        }
+        if (comment.getText().isBlank()) {
+            throw new IncorrectParameterException("text не может быть пустым");
+        }
+        comment.setItem(getItemById(itemId));
+        comment.setAuthor(userService.getUserById(userId));
+        comment.setCreated(LocalDate.now());
+        commentRepository.save(comment);
+        return comment;
+    }
+
+    public Collection<Comment> getCommentsByItemId(long itemId) {
+        return commentRepository.findCommentsByItemIdOrderByCreatedDesc(itemId);
+    }
+
+    @Override
+    public boolean isUserBookedItem(long userId, long itemId) {
+        return !bookingRepository.findBookingByBookerIdAndItemIdAndEndBeforeOrderByStartDesc(userId, itemId, LocalDateTime.now()).isEmpty();
     }
 
     @Override
@@ -56,7 +87,6 @@ public class ItemServiceImpl implements ItemService {
     public void deleteItem(long itemId) {
         if (getItemById(itemId) != null) {
             itemRepository.deleteById(itemId);
-//            itemStorage.deleteItem(itemId);
         }
     }
 
@@ -87,14 +117,17 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findItemsByOwnerId(userId);
     }
 
-    //    TODO!!!!
     @Override
     public Collection<Item> searchBySubstring(String substr) {
         if (substr.isBlank()) {
             return Collections.emptyList();
         }
-//        substr = substr.toLowerCase(Locale.ROOT);
         return itemRepository.searchByNameAndDescription(substr).stream().filter(item -> item.getAvailable()).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isUserEqualsOwnerItem(long userId, long itemId) {
+        return getItemById(itemId).getOwner().getId() == userId;
     }
 }
 

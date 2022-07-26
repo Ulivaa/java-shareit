@@ -17,9 +17,7 @@ public class BookingDtoOut {
     private LocalDateTime end;
     private Status status;
     private BookingDtoIn.Booker booker;
-        private Item item;
-//        @JsonInclude(JsonInclude.Include.NON_EMPTY)
-//    private long itemId;
+    private Item item;
 
     @Data
     public static class Booker {

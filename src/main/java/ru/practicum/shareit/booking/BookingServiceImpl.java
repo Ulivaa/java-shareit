@@ -4,13 +4,14 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.BookingNotFoundException;
 import ru.practicum.shareit.exception.IncorrectParameterException;
 import ru.practicum.shareit.exception.ItemNotFoundException;
-import ru.practicum.shareit.exception.UserNotFoundException;
+import ru.practicum.shareit.exception.SelfBookingException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,7 +28,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking addBooking(long userId, Booking booking) {
-
         if (booking.getStart().isAfter(booking.getEnd())
                 || booking.getStart().isBefore(LocalDateTime.now())) {
             throw new IncorrectParameterException("start");
@@ -39,12 +39,8 @@ public class BookingServiceImpl implements BookingService {
             throw new IncorrectParameterException("item");
         }
         booking.setStatus(Status.WAITING);
-//        if (bookingRepository.findBookingByBookerIdAndItemId(userId, booking.getItem().getId()) != null) {
-//            throw new IncorrectParameterException("userId!!!");
-//        }
-
-        if (item.getOwner().getId() == userId) {
-            throw new UserNotFoundException("userId!!!");// TODO сделать норм 404 ошибку для бронирования самого себя
+        if (itemService.isUserEqualsOwnerItem(userId, booking.getItem().getId())) {
+            throw new SelfBookingException("userId!!!");
         }
         bookingRepository.save(booking);
         return booking;
@@ -53,7 +49,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking approveBooking(long ownerId, long bookingId, boolean approved) {
         Booking booking = getBookingById(bookingId);
-        if (isUserEqualsOwnerItem(ownerId, booking.getItem().getId())) {
+        if (itemService.isUserEqualsOwnerItem(ownerId, booking.getItem().getId())) {
             if (approved) {
                 if (!booking.getStatus().equals(Status.APPROVED)) {
                     booking.setStatus(Status.APPROVED);
@@ -65,7 +61,6 @@ public class BookingServiceImpl implements BookingService {
             throw new ItemNotFoundException(String.format("Вещь № %d не принадлежит пользователю № %d",
                     booking.getItem().getId(),
                     ownerId));
-
         bookingRepository.save(booking);
         return booking;
     }
@@ -79,7 +74,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking requestBookingByIdByOwnerBookingOrItem(long bookingId, long userId) {
         Booking booking = getBookingById(bookingId);
-        if (!isUserEqualsOwnerItem(userId, booking.getItem().getId())
+        if (!itemService.isUserEqualsOwnerItem(userId, booking.getItem().getId())
                 && !isUserEqualsOwnerBooking(userId, bookingId))
             throw new BookingNotFoundException(String.format("Бронирование № %d не найдено", bookingId));
         return booking;
@@ -87,7 +82,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Collection<Booking> getUserBookings(long userId, String state) {
-
         switch (state) {
             case "ALL":
                 return bookingRepository.findBookingByBookerIdOrderByStartDesc(userId);
@@ -134,24 +128,23 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public boolean isUserEqualsOwnerItem(long userId, long itemId) {
-        return itemService.getItemById(itemId).getOwner().getId() == userId;
-    }
-
-    @Override
     public boolean isUserEqualsOwnerBooking(long userId, long bookingId) {
         return getBookingById(bookingId).getBooker().getId() == userId;
     }
 
     @Override
-    public Booking getLastItemBooking(long itemId,  LocalDateTime now) {
-//        return bookingRepository;
-        return null;
+    public Booking getLastItemBooking(long itemId, LocalDateTime now) {
+        return bookingRepository.findBookingByItemIdAndEndBeforeOrderByStartDesc(itemId, now)
+                .stream()
+                .max(Comparator.comparing(Booking::getEnd))
+                .orElse(null);
     }
 
     @Override
-    public Booking getNextItemBooking(long itemId,  LocalDateTime now) {
-        return null;
+    public Booking getNextItemBooking(long itemId, LocalDateTime now) {
+        return bookingRepository.findBookingByItemIdAndStartAfterOrderByStartDesc(itemId, now)
+                .stream()
+                .min(Comparator.comparing(Booking::getStart))
+                .orElse(null);
     }
-
 }

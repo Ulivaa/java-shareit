@@ -17,11 +17,10 @@ public interface BookingService {
 
     Collection<Booking> getItemBookingsForOwner(long userId, String state);
 
-    boolean isUserEqualsOwnerItem(long userId, long itemId);
-
     boolean isUserEqualsOwnerBooking(long userId, long bookingId);
 
     Booking getLastItemBooking(long itemId, LocalDateTime now);
 
-    Booking getNextItemBooking(long itemId,  LocalDateTime now);
+    Booking getNextItemBooking(long itemId, LocalDateTime now);
+
 }

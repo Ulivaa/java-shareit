@@ -6,9 +6,6 @@ import ru.practicum.shareit.booking.dto.BookingDtoOut;
 
 import java.util.Collection;
 
-//тк в тз и тестах нет никаких требований пока что к этим классам,
-// я не стала реализовывать их, чтобы потом не переделывать.
-
 @RestController
 @RequestMapping(path = "/bookings")
 public class BookingController {

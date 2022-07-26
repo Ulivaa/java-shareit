@@ -2,7 +2,8 @@ package ru.practicum.shareit.item.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-import ru.practicum.shareit.booking.Booking;
+
+import java.util.Collection;
 
 @Builder
 @Getter
@@ -18,6 +19,7 @@ public class ItemDtoOwner {
     private Booking nextBooking;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private ItemRequest itemRequest;
+    private Collection<CommentDto> comments;
 
     @Data
     public static class Owner {
@@ -28,6 +30,12 @@ public class ItemDtoOwner {
     @Data
     public static class ItemRequest {
         private final long id;
+    }
+
+    @Data
+    public static class Booking {
+        private final long id;
+        private final long bookerId;
     }
 
 }
