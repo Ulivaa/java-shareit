@@ -11,13 +11,15 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BookingDto {
+public class BookingDtoOut {
     private long id;
     private LocalDateTime start;
     private LocalDateTime end;
     private Status status;
-    private Booker booker;
-    private Item item;
+    private BookingDtoIn.Booker booker;
+        private Item item;
+//        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+//    private long itemId;
 
     @Data
     public static class Booker {

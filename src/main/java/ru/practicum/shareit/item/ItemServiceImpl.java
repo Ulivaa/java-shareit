@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.UserService;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -33,7 +34,7 @@ public class ItemServiceImpl implements ItemService {
     public Item updateItem(long userId, long itemId, Item item) {
         userService.getUserById(userId);
         if (getItemById(itemId).getOwner().getId() != userId) {
-            throw new ItemNotFoundException(String.format("Вещь № %d не пренадлежит пользователю № %d", itemId, userId));
+            throw new ItemNotFoundException(String.format("Вещь № %d не принадлежит пользователю № %d", itemId, userId));
         }
         Item updateItem = getItemById(itemId);
         if (item.getName() != null) {
@@ -73,7 +74,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     public Item getItemById(long itemId) {
-        return itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(String.format("Пользователь № %d не найден", itemId)));
+        return itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(String.format("Вещь № %d не найдена", itemId)));
     }
 
     @Override
@@ -92,7 +93,8 @@ public class ItemServiceImpl implements ItemService {
         if (substr.isBlank()) {
             return Collections.emptyList();
         }
-        return itemRepository.searchByNameAndDescription(substr);
+//        substr = substr.toLowerCase(Locale.ROOT);
+        return itemRepository.searchByNameAndDescription(substr).stream().filter(item -> item.getAvailable()).collect(Collectors.toList());
     }
 }
 

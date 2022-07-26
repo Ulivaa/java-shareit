@@ -2,17 +2,20 @@ package ru.practicum.shareit.item.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import ru.practicum.shareit.booking.Booking;
 
 @Builder
 @Getter
 @Setter
 @AllArgsConstructor
-public class ItemDto {
+public class ItemDtoOwner {
     private long id;
     private String name;
     private String description;
     private Boolean available;
     private Owner owner;
+    private Booking lastBooking;
+    private Booking nextBooking;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private ItemRequest itemRequest;
 
@@ -26,4 +29,5 @@ public class ItemDto {
     public static class ItemRequest {
         private final long id;
     }
+
 }
