@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.IncorrectParameterException;
@@ -62,7 +63,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public boolean isUserBookedItem(long userId, long itemId) {
-        return !bookingRepository.findBookingByBookerIdAndItemIdAndEndBeforeOrderByStartDesc(userId, itemId, LocalDateTime.now()).isEmpty();
+        return !bookingRepository.findByBookerIdAndItemIdAndEndBefore(userId, itemId, LocalDateTime.now(), Sort.by(Sort.Direction.DESC,
+                "start")).isEmpty();
     }
 
     @Override

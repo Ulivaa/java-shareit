@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.model.Booking;
@@ -11,33 +12,33 @@ import java.util.Collection;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     // Поиск по id владельца бронирования
-    Collection<Booking> findBookingByBookerIdOrderByStartDesc(long userId);
+    Collection<Booking> findByBookerIdOrderByStartDesc(long userId);
 
     // Поиск текущих бронирований
-    Collection<Booking> findBookingByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(long userId, LocalDateTime now, LocalDateTime now2);
+    Collection<Booking> findByBookerIdAndStartBeforeAndEndAfter(long userId, LocalDateTime now, LocalDateTime now2, Sort sort);
 
     // Поиск завершенных бронирований
-    Collection<Booking> findBookingByBookerIdAndEndBeforeOrderByStartDesc(long userId, LocalDateTime now);
+    Collection<Booking> findByBookerIdAndEndBeforeOrderByStartDesc(long userId, LocalDateTime now);
 
     // Поиск будущих бронирований
-    Collection<Booking> findBookingByBookerIdAndStartAfterOrderByStartDesc(long userId, LocalDateTime now);
+    Collection<Booking> findByBookerIdAndStartAfterOrderByStartDesc(long userId, LocalDateTime now);
 
-    Collection<Booking> findBookingByBookerIdAndStatusOrderByStartDesc(long userId, Status status);
+    Collection<Booking> findByBookerIdAndStatusOrderByStartDesc(long userId, Status status);
 
     //   Поиск бронирований для всех вещей владельца
-    Collection<Booking> findBookingByItemIdInOrderByStartDesc(Collection<Long> itemsId);
+    Collection<Booking> findByItemIdInOrderByStartDesc(Collection<Long> itemsId);
 
-    Collection<Booking> findBookingByItemIdInAndStartBeforeAndEndAfterOrderByStartDesc(Collection<Long> itemsId, LocalDateTime now, LocalDateTime now2);
+    Collection<Booking> findByItemIdInAndStartBeforeAndEndAfter(Collection<Long> itemsId, LocalDateTime now, LocalDateTime now2, Sort sort);
 
-    Collection<Booking> findBookingByItemIdInAndEndBeforeOrderByStartDesc(Collection<Long> itemsId, LocalDateTime now);
+    Collection<Booking> findByItemIdInAndEndBeforeOrderByStartDesc(Collection<Long> itemsId, LocalDateTime now);
 
-    Collection<Booking> findBookingByItemIdInAndStartAfterOrderByStartDesc(Collection<Long> itemsId, LocalDateTime now);
+    Collection<Booking> findByItemIdInAndStartAfterOrderByStartDesc(Collection<Long> itemsId, LocalDateTime now);
 
-    Collection<Booking> findBookingByItemIdInAndStatusOrderByStartDesc(Collection<Long> itemsId, Status status);
+    Collection<Booking> findByItemIdInAndStatusOrderByStartDesc(Collection<Long> itemsId, Status status);
 
-    Collection<Booking> findBookingByItemIdAndEndBeforeOrderByStartDesc(long itemId, LocalDateTime now);
+    Collection<Booking> findByItemIdAndEndBeforeOrderByStartDesc(long itemId, LocalDateTime now);
 
-    Collection<Booking> findBookingByItemIdAndStartAfterOrderByStartDesc(long itemId, LocalDateTime now);
+    Collection<Booking> findByItemIdAndStartAfterOrderByStartDesc(long itemId, LocalDateTime now);
 
-    Collection<Booking> findBookingByBookerIdAndItemIdAndEndBeforeOrderByStartDesc(long bookerId, long itemId, LocalDateTime now);
+    Collection<Booking> findByBookerIdAndItemIdAndEndBefore(long bookerId, long itemId, LocalDateTime now, Sort sort);
 }

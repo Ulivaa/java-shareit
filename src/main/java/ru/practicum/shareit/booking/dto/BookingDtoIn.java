@@ -8,6 +8,14 @@ import ru.practicum.shareit.booking.model.Status;
 
 import java.time.LocalDateTime;
 
+// К сожалению я другого варианта не увидела кроме как два дто, тк на вход приходит боди :
+//{
+//    "itemId": 2,
+//    "start": "{{start}}",
+//    "end": "{{end}}"
+//}
+// А на выход от нас хотят объект,
+// и если оставить одно дто с объектом item то он его не находит при входе в контроллер, т.к. там есть только id
 @Getter
 @Setter
 @AllArgsConstructor
