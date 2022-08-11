@@ -5,6 +5,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoOwner;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.requests.model.ItemRequest;
 
 import java.util.Collection;
 
@@ -16,7 +17,8 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .owner(new ItemDto.Owner(item.getOwner().getId(), item.getOwner().getName())).build();
+                .owner(new ItemDto.Owner(item.getOwner().getId(), item.getOwner().getName()))
+                .requestId(item.getRequest() == null ? null : item.getRequest().getId()).build();
     }
 
     public static ItemDtoOwner toItemDtoOwner(Item item, Booking lastB, Booking nextB, Collection<CommentDto> comments) {
@@ -37,6 +39,7 @@ public class ItemMapper {
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
+                .request(itemDto.getRequestId() == null ? null : ItemRequest.builder().id(itemDto.getRequestId()).build())
                 .build();
     }
 }

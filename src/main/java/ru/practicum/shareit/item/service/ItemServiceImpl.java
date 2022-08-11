@@ -10,6 +10,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.requests.service.ItemRequestService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -25,19 +26,25 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final CommentRepository commentRepository;
     private final BookingRepository bookingRepository;
+    private final ItemRequestService itemRequestService;
 
     @Autowired
-    public ItemServiceImpl(UserService userService, ItemRepository itemRepository, CommentRepository commentRepository, BookingRepository bookingRepository) {
+    public ItemServiceImpl(UserService userService, ItemRepository itemRepository, CommentRepository commentRepository, BookingRepository bookingRepository, ItemRequestService itemRequestService) {
         this.userService = userService;
         this.itemRepository = itemRepository;
         this.commentRepository = commentRepository;
         this.bookingRepository = bookingRepository;
+        this.itemRequestService = itemRequestService;
     }
 
     public Item addItem(long userId, Item item) {
         hasParams(item);
         User user = userService.getUserById(userId);
         item.setOwner(user);
+//        ItemRequest itemRequest = itemRequestService.getItemRequestById(item.getRequest().getId());
+        if (item.getRequest() != null) {
+            item.setRequest(itemRequestService.getItemRequestById(userId, item.getRequest().getId()));
+        }
         itemRepository.save(item);
         return item;
     }
@@ -83,8 +90,8 @@ public class ItemServiceImpl implements ItemService {
         if (item.getAvailable() != null) {
             updateItem.setAvailable(item.getAvailable());
         }
-        if (item.getItemRequest() != null) {
-            updateItem.setItemRequest(item.getItemRequest());
+        if (item.getRequest() != null) {
+            updateItem.setRequest(item.getRequest());
         }
         itemRepository.save(updateItem);
         return updateItem;
@@ -121,6 +128,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Collection<Item> getAllItemByUserId(long userId) {
         return itemRepository.findItemsByOwnerId(userId);
+    }
+
+    public Collection<Item> getAllItemByItemRequestId(long itemRequestId) {
+        return itemRepository.findAllByRequestId(itemRequestId);
     }
 
     @Override

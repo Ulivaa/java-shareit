@@ -14,6 +14,7 @@ import ru.practicum.shareit.item.service.ItemService;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @RestController
@@ -74,7 +75,7 @@ public class ItemController {
                             .map(CommentMapper::toCommentDto)
                             .collect(Collectors.toList());
                     return ItemMapper.toItemDtoOwner(itemService.getItemById(item.getId()), lastB, nextB, comments);
-                })
+                }).sorted(Comparator.comparingLong(ItemDtoOwner::getId))
                 .collect(Collectors.toList());
     }
 

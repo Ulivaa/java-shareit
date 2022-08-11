@@ -14,16 +14,11 @@ public class ItemDto {
     private Boolean available;
     private Owner owner;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private ItemRequest itemRequest;
+    private Long requestId;
 
     @Data
     public static class Owner {
         private final long id;
         private final String name;
-    }
-
-    @Data
-    public static class ItemRequest {
-        private final long id;
     }
 }
