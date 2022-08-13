@@ -52,7 +52,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
             throw new IncorrectParameterException("from");
         }
         userService.getUserById(userId);
-
         return itemRequestRepository.findItemRequestsByRequestor_IdIsNotOrderByCreatedDesc(userId, PageRequest.of(from, size));
     }
 

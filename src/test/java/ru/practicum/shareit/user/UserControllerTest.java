@@ -50,17 +50,11 @@ public class UserControllerTest {
     @Test
     public void updateUser() throws Exception {
         String json = "{\"name\":\"update\", \"email\":\"update@mail.com\"}";
-//        user = User.builder().id(1).name("update").email("update@mail.com").build();
-//        when(userService.updateUser(1, user))
-//                .thenReturn(user);
-
         this.mockMvc
                 .perform(patch("/users/1")
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.email", is("update@mail.com")))
-        ;
+                .andExpect(status().isOk());
     }
 
     @Test

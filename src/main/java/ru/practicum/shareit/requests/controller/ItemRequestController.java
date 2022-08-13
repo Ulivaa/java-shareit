@@ -47,6 +47,7 @@ public class ItemRequestController {
                 itemDtoCollection(itemService.getAllItemByItemRequestId(requestId)));
     }
 
+    //    получить список запросов, созданных другими пользователями
     @GetMapping("/all")
     public Collection<ItemRequestDto> getAllItemRequest(@RequestHeader("X-Sharer-User-Id") long userId,
                                                         @RequestParam(defaultValue = "0") @Positive int from,

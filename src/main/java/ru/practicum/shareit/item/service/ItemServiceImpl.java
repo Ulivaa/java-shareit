@@ -41,7 +41,6 @@ public class ItemServiceImpl implements ItemService {
         hasParams(item);
         User user = userService.getUserById(userId);
         item.setOwner(user);
-//        ItemRequest itemRequest = itemRequestService.getItemRequestById(item.getRequest().getId());
         if (item.getRequest() != null) {
             item.setRequest(itemRequestService.getItemRequestById(userId, item.getRequest().getId()));
         }
@@ -68,11 +67,6 @@ public class ItemServiceImpl implements ItemService {
         return commentRepository.findCommentsByItemIdOrderByCreatedDesc(itemId);
     }
 
-    @Override
-    public boolean isUserBookedItem(long userId, long itemId) {
-        return !bookingRepository.findByBookerIdAndItemIdAndEndBefore(userId, itemId, LocalDateTime.now(), Sort.by(Sort.Direction.DESC,
-                "start")).isEmpty();
-    }
 
     @Override
     public Item updateItem(long userId, long itemId, Item item) {
@@ -145,6 +139,12 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public boolean isUserEqualsOwnerItem(long userId, long itemId) {
         return getItemById(itemId).getOwner().getId() == userId;
+    }
+
+    @Override
+    public boolean isUserBookedItem(long userId, long itemId) {
+        return !bookingRepository.findByBookerIdAndItemIdAndEndBefore(userId, itemId, LocalDateTime.now(), Sort.by(Sort.Direction.DESC,
+                "start")).isEmpty();
     }
 }
 

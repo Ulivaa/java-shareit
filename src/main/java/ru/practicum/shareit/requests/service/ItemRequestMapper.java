@@ -26,12 +26,6 @@ public class ItemRequestMapper {
                 .requestor(new ItemRequestDto.Requestor(
                         itemRequest.getRequestor().getId(),
                         itemRequest.getRequestor().getName())).created(itemRequest.getCreated()).build();
-//        return new ItemRequestDto(itemRequest.getId(),
-//                itemRequest.getDescription(),
-//                new ItemRequestDto.Requestor(
-//                        itemRequest.getRequestor().getId(),
-//                        itemRequest.getRequestor().getName()),
-//                itemRequest.getCreated());
     }
 
     public static ItemRequest toItemRequest(ItemRequestDto itemRequestDto) {

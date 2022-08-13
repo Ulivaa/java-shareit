@@ -72,6 +72,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new BookingNotFoundException(String.format("Бронирование № %d не найдено", bookingId)));
     }
 
+//    запрос бронирования для владельца вещи или владельца бронирования
     @Override
     public Booking requestBookingByIdByOwnerBookingOrItem(long bookingId, long userId) {
         Booking booking = getBookingById(bookingId);

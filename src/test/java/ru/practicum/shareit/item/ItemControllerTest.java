@@ -171,5 +171,4 @@ public class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
                 .andExpect(status().isOk());
     }
-
 }
