@@ -76,6 +76,4 @@ public class ItemRepositoryTest {
         then(result).size().isEqualTo(1);
         then(result).containsExactlyElementsOf(List.of(item));
     }
-
-
 }

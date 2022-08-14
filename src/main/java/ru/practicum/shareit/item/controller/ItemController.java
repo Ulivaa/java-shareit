@@ -44,8 +44,6 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    // хотела сделать ItemDtoOwner наследником ItemDto но он хочет тогда чтобы я создала конструктор руками..
-    // не понимаю как это должно работать
     public ItemDtoOwner getItemById(@RequestHeader("X-Sharer-User-Id") long userId,
                                     @PathVariable long itemId) {
         Item item = itemService.getItemById(itemId);

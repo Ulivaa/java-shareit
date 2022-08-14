@@ -44,7 +44,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public Collection<ItemRequest> getAllItemRequest(long userId, int from, int size) {
-        // не понимаю почему не работает аннотация в контроллере @Positive
         if (size <= 0) {
             throw new IncorrectParameterException("size");
         }

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.requests.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -11,10 +12,12 @@ import ru.practicum.shareit.requests.service.ItemRequestMapper;
 import ru.practicum.shareit.requests.service.ItemRequestService;
 
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 @RestController
+@Validated
 @RequestMapping(path = "/requests")
 public class ItemRequestController {
     private final ItemRequestService itemRequestService;
@@ -50,7 +53,7 @@ public class ItemRequestController {
     //    получить список запросов, созданных другими пользователями
     @GetMapping("/all")
     public Collection<ItemRequestDto> getAllItemRequest(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                        @RequestParam(defaultValue = "0") @Positive int from,
+                                                        @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                                         @RequestParam(defaultValue = "10") @Positive int size) {
 
         return itemRequestService.getAllItemRequest(userId, from, size).stream()
