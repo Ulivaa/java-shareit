@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.exception.BookingNotFoundException;
-import ru.practicum.shareit.exception.IncorrectParameterException;
-import ru.practicum.shareit.exception.ItemNotFoundException;
-import ru.practicum.shareit.exception.SelfBookingException;
+import ru.practicum.shareit.exception.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
@@ -75,6 +72,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new BookingNotFoundException(String.format("Бронирование № %d не найдено", bookingId)));
     }
 
+//    запрос бронирования для владельца вещи или владельца бронирования
     @Override
     public Booking requestBookingByIdByOwnerBookingOrItem(long bookingId, long userId) {
         Booking booking = getBookingById(bookingId);
@@ -86,6 +84,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Collection<Booking> getUserBookings(long userId, String state) {
+        userService.getUserById(userId);
         switch (state) {
             case "ALL":
                 return bookingRepository.findByBookerIdOrderByStartDesc(userId);
@@ -102,13 +101,14 @@ public class BookingServiceImpl implements BookingService {
             case "REJECTED":
                 return bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED);
             default:
-                throw new IncorrectParameterException("state");
+                throw new UnknownStateException();
         }
 
     }
 
     @Override
     public Collection<Booking> getItemBookingsForOwner(long userId, String state) {
+        userService.getUserById(userId);
         Collection<Long> itemsId = itemService.getAllItemByUserId(userId)
                 .stream()
                 .map(Item::getId)
@@ -129,7 +129,7 @@ public class BookingServiceImpl implements BookingService {
             case "REJECTED":
                 return bookingRepository.findByItemIdInAndStatusOrderByStartDesc(itemsId, Status.REJECTED);
             default:
-                throw new IncorrectParameterException("state");
+                throw new UnknownStateException();
         }
     }
 

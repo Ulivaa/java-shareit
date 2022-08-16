@@ -20,6 +20,8 @@ public interface ItemService {
 
     Collection<Item> getAllItemByUserId(long userId);
 
+    Collection<Item> getAllItemByItemRequestId(long itemRequestId);
+
     Collection<Item> searchBySubstring(String substr);
 
     boolean isUserEqualsOwnerItem(long userId, long itemId);

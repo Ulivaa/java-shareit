@@ -14,6 +14,7 @@ import ru.practicum.shareit.item.service.ItemService;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @RestController
@@ -43,8 +44,6 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    // хотела сделать ItemDtoOwner наследником ItemDto но он хочет тогда чтобы я создала конструктор руками..
-    // не понимаю как это должно работать
     public ItemDtoOwner getItemById(@RequestHeader("X-Sharer-User-Id") long userId,
                                     @PathVariable long itemId) {
         Item item = itemService.getItemById(itemId);
@@ -74,7 +73,7 @@ public class ItemController {
                             .map(CommentMapper::toCommentDto)
                             .collect(Collectors.toList());
                     return ItemMapper.toItemDtoOwner(itemService.getItemById(item.getId()), lastB, nextB, comments);
-                })
+                }).sorted(Comparator.comparingLong(ItemDtoOwner::getId))
                 .collect(Collectors.toList());
     }
 
