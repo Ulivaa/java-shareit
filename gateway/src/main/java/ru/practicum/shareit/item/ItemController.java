@@ -17,7 +17,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 public class ItemController {
     private final ItemClient itemClient;
 
-
     @PostMapping
     public ResponseEntity<Object> addItem(@RequestHeader("X-Sharer-User-Id") long userId,
                                           @RequestBody @Validated ItemDto itemDto) {
@@ -42,12 +41,10 @@ public class ItemController {
         return itemClient.getAllItem(userId);
     }
 
-
     @GetMapping("/search")
     public ResponseEntity<Object> searchBySubstring(@RequestParam String text) {
         return itemClient.searchBySubstring(text);
     }
-
 
     @DeleteMapping("/{itemId}")
     public ResponseEntity<Object> deleteItemById(@PathVariable long itemId) {
@@ -60,6 +57,4 @@ public class ItemController {
                                              @RequestBody CommentDto commentDto) {
         return itemClient.addComment(userId, itemId, commentDto);
     }
-
-
 }

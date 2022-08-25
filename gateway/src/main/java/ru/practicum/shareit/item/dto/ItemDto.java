@@ -15,6 +15,7 @@ public class ItemDto {
     private String name;
     @NotEmpty
     private String description;
+    //    Почему-то выдает ошибку, если оставляю с аннотацией ниже.
 //    @NotEmpty
     private Boolean available;
     private Owner owner;

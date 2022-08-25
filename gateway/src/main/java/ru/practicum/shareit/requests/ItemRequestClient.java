@@ -8,7 +8,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 
@@ -32,7 +31,6 @@ public class ItemRequestClient extends BaseClient {
         return post("", userId, itemRequestDto);
     }
 
-
     public ResponseEntity<Object> updateItemRequest(long userId, long itemId, ItemDto itemDto) {
         return patch("/" + itemId, userId, itemDto);
     }
@@ -45,10 +43,8 @@ public class ItemRequestClient extends BaseClient {
         return get("", userId);
     }
 
-
     public ResponseEntity<Object> getAllItemRequest(long userId, long from, long size) {
         return get("/all?from={from}&&size={size}", userId, Map.of("from", from, "size", size));
     }
-
 
 }

@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   gateway:
+#    image: gateway:01
     build: ./gateway
 #    image:
     container_name: gateway
@@ -21,19 +22,19 @@ services:
     depends_on:
       - db
     environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5433/shareit
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
         DB_HOST: db
-        DB_PORT: 5433
+        DB_PORT: 5432
         DB_NAME: shareit
-        DB_USER: shareit
-        DB_PASS: shareit
+        POSTGRES_USER: kitty
+        POSTGRES_PASSWORD: purrrrrr
         TZ: "Europe/Moscow"
 
   db:
     image: postgres:14.3-alpine
     container_name: db
     ports:
-      - "5433:5433"
+      - "5433:5432"
     environment:
       POSTGRES_DB: shareit
       POSTGRES_USER: kitty
