@@ -11,8 +11,6 @@ import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.service.ItemRequestMapper;
 import ru.practicum.shareit.requests.service.ItemRequestService;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -53,8 +51,8 @@ public class ItemRequestController {
     //    получить список запросов, созданных другими пользователями
     @GetMapping("/all")
     public Collection<ItemRequestDto> getAllItemRequest(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                        @RequestParam(defaultValue = "0") @PositiveOrZero int from,
-                                                        @RequestParam(defaultValue = "10") @Positive int size) {
+                                                        @RequestParam(defaultValue = "0")  int from,
+                                                        @RequestParam(defaultValue = "10") int size) {
 
         return itemRequestService.getAllItemRequest(userId, from, size).stream()
                 .map(itemRequest -> ItemRequestMapper.toItemRequestDto(itemRequest,
